@@ -2,13 +2,10 @@ apiVersion: v1
 kind: Service
 metadata:
   name: nginx-service
-  labels:
-    app: nginx
 spec:
   selector:
     app: nginx
   ports:
-  - name: http
-    port: 80
-    targetPort: 8080
+    - port: 80          # port exposé pour les clients
+      targetPort: 8080  # port utilisé à l’intérieur du conteneur
   type: ClusterIP
