@@ -36,3 +36,38 @@ spec:
         - name: html
           configMap:
             name: nginx-config
+spec:
+  securityContext:
+    runAsNonRoot: true
+    runAsUser: 101
+    fsGroup: 101
+  containers:
+    - name: nginx
+      image: nginxinc/nginx-unprivileged:1.25.5-alpine
+      ports:
+        - containerPort: 8080
+      securityContext:
+        allowPrivilegeEscalation: false
+        readOnlyRootFilesystem: true
+        capabilities:
+          drop: ["ALL"]
+          add: ["NET_BIND_SERVICE"]
+      volumeMounts:
+        - name: html
+          mountPath: /usr/share/nginx/html
+        - name: tmp
+          mountPath: /tmp
+        - name: cache
+          mountPath: /var/cache/nginx
+        - name: run
+          mountPath: /var/run
+  volumes:
+    - name: html
+      configMap:
+        name: nginx-config
+    - name: tmp
+      emptyDir: {}
+    - name: cache
+      emptyDir: {}
+    - name: run
+      emptyDir: {}
